@@ -1,10 +1,11 @@
-package main
+package pro1
 
 import (
 	"encoding/hex"
 	"errors"
 	"fmt"
 	"reflect"
+	"strings"
 
 	"golang.org/x/crypto/sha3"
 )
@@ -1008,6 +1009,86 @@ func (node *Node) hash_node() string {
 	return "HashStart_" + hex.EncodeToString(sum[:]) + "_HashEnd"
 }
 
+func (node *Node) String() string {
+	str := "empty string"
+	switch node.node_type {
+	case 0:
+		str = "[Null Node]"
+	case 1:
+		str = "Branch["
+		for i, v := range node.branch_value[:16] {
+			str += fmt.Sprintf("%d=\"%s\", ", i, v)
+		}
+		str += fmt.Sprintf("value=%s]", node.branch_value[16])
+	case 2:
+		encoded_prefix := node.flag_value.encoded_prefix
+		node_name := "Leaf"
+		if is_ext_node(encoded_prefix) {
+			node_name = "Ext"
+		}
+		ori_prefix := strings.Replace(fmt.Sprint(compact_decode(encoded_prefix)), " ", ", ", -1)
+		str = fmt.Sprintf("%s<%v, value=\"%s\">", node_name, ori_prefix, node.flag_value.value)
+	}
+	return str
+}
+
+func node_to_string(node Node) string {
+	return node.String()
+}
+
+func (mpt *MerklePatriciaTrie) Initial() {
+	mpt.db = make(map[string]Node)
+}
+
+func is_ext_node(encoded_arr []uint8) bool {
+	return encoded_arr[0]/16 < 2
+}
+
+func TestCompact() {
+	test_compact_encode()
+}
+
+func (mpt *MerklePatriciaTrie) String() string {
+	content := fmt.Sprintf("ROOT=%s\n", mpt.root)
+	for hash := range mpt.db {
+		content += fmt.Sprintf("%s: %s\n", hash, node_to_string(mpt.db[hash]))
+	}
+	return content
+}
+
+func (mpt *MerklePatriciaTrie) Order_nodes() string {
+	raw_content := mpt.String()
+	content := strings.Split(raw_content, "\n")
+	root_hash := strings.Split(strings.Split(content[0], "HashStart")[1], "HashEnd")[0]
+	queue := []string{root_hash}
+	i := -1
+	rs := ""
+	cur_hash := ""
+	for len(queue) != 0 {
+		last_index := len(queue) - 1
+		cur_hash, queue = queue[last_index], queue[:last_index]
+		i += 1
+		line := ""
+		for _, each := range content {
+			if strings.HasPrefix(each, "HashStart"+cur_hash+"HashEnd") {
+				line = strings.Split(each, "HashEnd: ")[1]
+				rs += each + "\n"
+				rs = strings.Replace(rs, "HashStart"+cur_hash+"HashEnd", fmt.Sprintf("Hash%v", i), -1)
+			}
+		}
+		temp2 := strings.Split(line, "HashStart")
+		flag := true
+		for _, each := range temp2 {
+			if flag {
+				flag = false
+				continue
+			}
+			queue = append(queue, strings.Split(each, "HashEnd")[0])
+		}
+	}
+	return rs
+}
+
 // StringToHexArray takes in string as input and returns a splitted-hex(0-15) array : 1st
 func StringToHexArray(s string) []uint8 {
 	uint8Array := []uint8(s)
@@ -1096,10 +1177,20 @@ func main() { //before pepsi
 		fmt.Println("horse : ", v1)
 	}
 
+	fmt.Println("inserting dorg")
+	mpt.Insert("dorg", "purppy")
+
+	vd, ed := mpt.Get("dorg")
+	if ed != nil {
+		fmt.Println("error in GET method")
+	} else {
+		fmt.Println("dorg : ", vd)
+	}
+
 	fmt.Println("inserting dog")
 	mpt.Insert("dog", "puppy")
 
-	vd, ed := mpt.Get("dog")
+	vd, ed = mpt.Get("dog")
 	if ed != nil {
 		fmt.Println("error in GET method")
 	} else {
