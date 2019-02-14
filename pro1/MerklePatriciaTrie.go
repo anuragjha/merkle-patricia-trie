@@ -38,7 +38,7 @@ type MerklePatriciaTrie struct {
 func (mpt *MerklePatriciaTrie) Get(key string) (string, error) {
 
 	// return "", errors.New("path_not_found")
-
+	fmt.Println("IN GET:", key)
 	pathLeft := StringToHexArray(key)
 	fmt.Println("input Hex:", pathLeft)
 	currentNode := mpt.db[mpt.root]
@@ -59,13 +59,13 @@ func (mpt *MerklePatriciaTrie) Get(key string) (string, error) {
 func (mpt *MerklePatriciaTrie) getHelper(currentNode Node, pathLeft []uint8) (string, error) {
 
 	if len(pathLeft) < 0 {
-		//fmt.Println("pathleft is less than 0")
+		fmt.Println("pathleft is less than 0")
 		return "", errors.New("path_not_found")
 
 	} else if len(pathLeft) == 0 {
-		//fmt.Println("pathleft is equal 0")
+		fmt.Println("pathleft is equal 0")
 		if currentNode.node_type == 1 {
-			//fmt.Println("pathleft is equal 0 - node type 1")
+			fmt.Println("pathleft is equal 0 - node type 1")
 			if currentNode.branch_value[16] != "" {
 				//say found and return
 				return currentNode.branch_value[16], nil
@@ -73,10 +73,10 @@ func (mpt *MerklePatriciaTrie) getHelper(currentNode Node, pathLeft []uint8) (st
 				return "", errors.New("path_not_found")
 			}
 		} else if currentNode.node_type == 2 {
-			//fmt.Println("pathleft is equal 0 - node type 2")
+			fmt.Println("pathleft is equal 0 - node type 2")
 			hex_prefix_array := AsciiArrayToHexArray(currentNode.flag_value.encoded_prefix)
 			if hex_prefix_array[0] == 2 || hex_prefix_array[0] == 3 {
-				//fmt.Println("path length 0 next node is leaf")
+				fmt.Println("path length 0 next node is leaf")
 				if len(compact_decode(currentNode.flag_value.encoded_prefix)) == 0 {
 					return currentNode.flag_value.value, nil
 				} else {
@@ -87,62 +87,66 @@ func (mpt *MerklePatriciaTrie) getHelper(currentNode Node, pathLeft []uint8) (st
 			return "", errors.New("path_not_found")
 		}
 	} else if len(pathLeft) > 0 {
-		//fmt.Println("Current Node Type:", currentNode.node_type)
-		//fmt.Println("Node:", currentNode)
-		//fmt.Println("pathleft is greater than 0")
+		fmt.Println("Current Node Type:", currentNode.node_type)
+		fmt.Println("Node:", currentNode)
+		fmt.Println("pathleft is greater than 0")
 		if currentNode.node_type == 1 { //branch node
-			//fmt.Println("pathleft is greater than 0 - branch node")
-			//fmt.Println("pathLeft", pathLeft)
-			//fmt.Println("currentNode.branch_value", currentNode.branch_value[5])
+			fmt.Println("pathleft is greater than 0 - branch node")
+			fmt.Println("pathLeft", pathLeft)
+			fmt.Println("currentNode.branch_value", currentNode.branch_value[5])
 			if currentNode.branch_value[pathLeft[0]] != "" {
-				//fmt.Println("Value exists in branch!!")
-				//fmt.Println("Hash found:", currentNode.branch_value[pathLeft[0]])
+				fmt.Println("Value exists in branch!!")
+				fmt.Println("Hash found:", currentNode.branch_value[pathLeft[0]])
 				hash := currentNode.branch_value[pathLeft[0]]
 				pathLeft = pathLeft[1:]
-				//fmt.Println("Path Left from branch :", pathLeft)
+				fmt.Println("Path Left from branch :", pathLeft)
 				return mpt.getHelper(mpt.db[hash], pathLeft)
 			} else {
-				//fmt.Println("value not found in branch:", currentNode.branch_value[pathLeft[0]])
-				//fmt.Println("Branch value at the index when not found")
+				fmt.Println("value not found in branch:", currentNode.branch_value[pathLeft[0]])
+				fmt.Println("Branch value at the index when not found")
 				return "", errors.New("path_not_found")
 			}
 		} else if currentNode.node_type == 2 {
-			//fmt.Println("pathleft is greater than 0 - node_type 2")
+			fmt.Println("pathleft is greater than 0 - node_type 2")
 			hex_prefix_array := AsciiArrayToHexArray(currentNode.flag_value.encoded_prefix)
 			//fmt.Println("!!!!!!!!!!!HEX PREFIX :", hex_prefix_array)
 			if (hex_prefix_array[0] == 0) || (hex_prefix_array[0] == 1) {
-				//fmt.Println("pathleft is greater than 0 - node_type 2 - prefix 0 or 1 Extension")
+				fmt.Println("pathleft is greater than 0 - node_type 2 - prefix 0 or 1 Extension")
 				counter := 0
 				triePath := compact_decode(currentNode.flag_value.encoded_prefix)
-				//fmt.Println("currentNode.flag_value.encoded_prefix:", currentNode.flag_value.encoded_prefix)
-				//fmt.Println("triePathtriePathtriePath:", triePath)
-				//fmt.Println("pathLeftpathLeftpathLeft:", pathLeft)
+				fmt.Println("currentNode.flag_value.encoded_prefix:", currentNode.flag_value.encoded_prefix)
+				fmt.Println("triePathtriePathtriePath:", triePath)
+				fmt.Println("pathLeftpathLeftpathLeft:", pathLeft)
 				for i := 0; i < len(triePath); i++ {
 					if triePath[i] == pathLeft[i] {
 						counter++
 					}
 				}
-				//fmt.Println("counter34", counter)
+				fmt.Println("counter34", counter)
 				if counter == (len(triePath)) {
-					//fmt.Println("counter54", counter)
+					fmt.Println("counter54", counter)
 					pathLeft = pathLeft[counter:]
-					//fmt.Println("Path left before call:", pathLeft)
+					fmt.Println("Path left before call:", pathLeft)
 					return mpt.getHelper(mpt.db[currentNode.flag_value.value], pathLeft)
 				} else {
 					return "", errors.New("path_not_found")
 				}
 			} else if (hex_prefix_array[0] == 2) || (hex_prefix_array[0] == 3) {
-				//fmt.Println("pathleft is greater than 0 - node_type 2 - prefix 2 or 3 Leaf")
+				fmt.Println("pathleft is greater than 0 - node_type 2 - prefix 2 or 3 Leaf")
 				counter := 0
 				triePath := compact_decode(currentNode.flag_value.encoded_prefix)
-				//fmt.Println("leftPath :", pathLeft)
-				//fmt.Println("triePath", triePath)
+				fmt.Println("leftPath :", pathLeft)
+				fmt.Println("triePath", triePath)
+				//DEEP EQUAL
+				if len(pathLeft) < len(triePath) {
+					return "", errors.New("path_not_found")
+				}
 				for i := 0; i < len(triePath); i++ {
 					if triePath[i] == pathLeft[i] {
 						counter++
 					}
 				}
-				//fmt.Println("Counter", counter)
+				fmt.Println("Counter", counter)
 				if counter == (len(triePath)) {
 					pathLeft = pathLeft[counter:]
 					if len(pathLeft) == 0 {
@@ -161,6 +165,9 @@ func (mpt *MerklePatriciaTrie) getHelper(currentNode Node, pathLeft []uint8) (st
 }
 
 func (mpt *MerklePatriciaTrie) Insert(key string, new_value string) {
+	fmt.Println("Key being inserted:", key)
+	fmt.Println("VALUE being inserted:", new_value)
+
 	//hex_key_array := encode(toByteArray(key))
 	hex_key_array := StringToHexArray(key)
 	if mpt.root == "" {
@@ -177,6 +184,7 @@ func (mpt *MerklePatriciaTrie) Insert(key string, new_value string) {
 		root_node_hash := mpt.root
 		fmt.Println("Root hash before", mpt.root)
 		mpt.root = mpt.InsertRecursive(mpt.db[root_node_hash], hex_key_array, new_value, []uint8{})
+		fmt.Println("Root updated")
 		fmt.Println("Root hash after", mpt.root)
 	}
 
@@ -218,8 +226,12 @@ func (mpt *MerklePatriciaTrie) InsertRecursive(node Node, leftPath []uint8, newV
 					fmt.Println("Common path exists")
 					counter := 0
 					for i := 0; i < len(decodedHexArray); i++ {
+						//now me me me
+						if i == len(decodedHexArray) || i == len(leftPath) {
+							break
+						}
 						if decodedHexArray[i] == leftPath[i] {
-							counter++
+							counter = counter + 1
 						} else {
 							break
 						}
@@ -241,91 +253,85 @@ func (mpt *MerklePatriciaTrie) InsertRecursive(node Node, leftPath []uint8, newV
 
 					// if len(leftPath) > 0 && len(leftNibble) > 0 {
 					//create two leaves
-					leftPath = append(leftPath, 16)
-					leftNibble = append(leftNibble, 16)
+					if len(leftPath) > 0 {
+						leftPath = append(leftPath, 16)
+					}
+					if len(leftNibble) > 0 {
+						leftNibble = append(leftNibble, 16)
+					}
 					fmt.Println("Left path appended :", leftPath)
 					fmt.Println("Left nibble appended:", leftNibble)
-					nodeL1 := Node{}
-					nodeL1.node_type = 2
-					nodeL1.flag_value.encoded_prefix = compact_encode(leftPath[1:])
-					nodeL1.flag_value.value = newValue
+					if len(leftPath) > 0 {
+						nodeL1 := Node{}
+						nodeL1.node_type = 2
+						index := leftPath[0]    //now
+						leftPath = leftPath[1:] //now
+						fmt.Println("Left path:", leftPath)
+						nodeL1.flag_value.encoded_prefix = compact_encode(leftPath)
+						nodeL1.flag_value.value = newValue
+						nodeB.branch_value[index] = mpt.InsertRecursive(nodeL1, nil, "", nil)
+						fmt.Println("Inserted nodeL1")
+					} else if len(leftPath) == 0 {
+						nodeB.branch_value[16] = newValue
+						fmt.Println("Inserted in the value field of the branch")
+					}
 					if len(leftNibble) > 1 {
 						nodeL2 := Node{}
 						nodeL2.node_type = 2
-						nodeL2.flag_value.encoded_prefix = compact_encode(leftNibble[1:])
+						index := leftNibble[0]      //now
+						leftNibble = leftNibble[1:] //now
+						fmt.Println("Left nibble:", leftNibble)
+
+						nodeL2.flag_value.encoded_prefix = compact_encode(leftNibble)
 						nodeL2.flag_value.value = currNode.flag_value.value
-						nodeB.branch_value[leftNibble[0]] = mpt.InsertRecursive(nodeL2, nil, "", nil)
-					} else if len(leftNibble) == 1 {
+						nodeB.branch_value[index] = mpt.InsertRecursive(nodeL2, nil, "", nil)
+						fmt.Println("Inserted nodeL2")
+					} else if len(leftNibble) == 0 {
 						nodeB.branch_value[16] = currNode.flag_value.value
 						fmt.Println("Inserted in the value field of the branch")
 					}
-					nodeB.branch_value[leftPath[0]] = mpt.InsertRecursive(nodeL1, nil, "", nil)
-					fmt.Println("Inserted nodeL1")
-					fmt.Println("Inserted nodeL2")
 
 					nodeE.flag_value.value = mpt.InsertRecursive(nodeB, nil, "", nil)
-					fmt.Println("Inserted nodeLE")
+					fmt.Println("Inserted nodeB")
 
 					hashE := nodeE.hash_node()
 					mpt.db[hashE] = nodeE
+					fmt.Println("Inserted nodeE")
+
 					return hashE
 				} else {
 					//create branch
 					//create leaves or leaf
 					fmt.Println("In leaf and the left path is totally different than a leaf")
+					//put in the branch[16] field
+					//also check if the leaf has just one value
 					nodeB := Node{}
 					nodeB.node_type = 1
-					nodeL1 := Node{}
-					nodeL1.node_type = 2
-					if len(leftPath) > 0 {
-						leftPath = append(leftPath, 16)
-						nodeL1.flag_value.encoded_prefix = compact_encode(leftPath[1:])
-					} else {
-						leftPath = append([]uint8{16})
-						nodeL1.flag_value.encoded_prefix = compact_encode(leftPath[1:])
-						// hash := currNode.hash_node()
-						// mpt.db[hash] = currNode
-						// return hash
-					}
-
-					fmt.Println("leftPath :", leftPath)
-					//pepsi
-					// newleftpath := leftPath[1:]
-					// fmt.Println("newleftpath : ", newleftpath)
-					// if len(newleftpath) == 0 {
-					// 	// cocacola
-					// 	nodeL1.flag_value.encoded_prefix = compact_encode([]uint8{16})
-					// } else {
-					// 	nodeL1.flag_value.encoded_prefix = compact_encode(newleftpath)
-					// }
-					//fmt.Println("!!!!!! After newleftpath : ", newleftpath)
-
-					nodeL1.flag_value.value = newValue
-					nodeB.branch_value[leftPath[0]] = mpt.InsertRecursive(nodeL1, nil, "", nil)
 
 					if len(decodedHexArray) > 0 {
-						// if len(hexPrefixArray) > 1 && len(leftPath) > 1 {
-						// leftPath = append(leftPath, 16)
 						decodedHexArray = append(decodedHexArray, 16)
-						// nodeL1 := Node{}
-						// nodeL1.node_type = 2
-						// fmt.Println("leftPath :", leftPath)
-						// nodeL1.flag_value.encoded_prefix = compact_encode(leftPath[1:])
-						// nodeL1.flag_value.value = newValue
 						nodeL2 := Node{}
 						nodeL2.node_type = 2
 						fmt.Println("decodedHexArray :", decodedHexArray)
 						nodeL2.flag_value.encoded_prefix = compact_encode(decodedHexArray[1:])
 						nodeL2.flag_value.value = currNode.flag_value.value
 						nodeB.branch_value[decodedHexArray[0]] = mpt.InsertRecursive(nodeL2, nil, "", nil)
-						// nodeB.branch_value[leftPath[0]] = mpt.InsertRecursive(nodeL1, nil, "", nil)
-						// hashB := nodeB.hash_node()
-						// mpt.db[hashB] = nodeB
-						// fmt.Println("Branch and two leaves inserted")
-						// return hashB
 					} else if len(decodedHexArray) == 0 {
 						nodeB.branch_value[16] = currNode.flag_value.value
 					}
+
+					if len(leftPath) > 0 {
+						nodeL1 := Node{}
+						nodeL1.node_type = 2
+						leftPath = append(leftPath, 16)
+						nodeL1.flag_value.encoded_prefix = compact_encode(leftPath[1:])
+						nodeL1.flag_value.value = newValue
+						nodeB.branch_value[leftPath[0]] = mpt.InsertRecursive(nodeL1, nil, "", nil)
+
+					} else {
+						nodeB.branch_value[16] = newValue
+					}
+					fmt.Println("leftPath :", leftPath)
 					hashB := nodeB.hash_node()
 					mpt.db[hashB] = nodeB
 					fmt.Println("Branch and two leaves inserted")
@@ -339,6 +345,13 @@ func (mpt *MerklePatriciaTrie) InsertRecursive(node Node, leftPath []uint8, newV
 					//insert in branch value place
 					fmt.Println("Equal in extension..")
 					fmt.Println("Left path:", leftPath)
+					fmt.Println("Next node type : ", currNode.node_type)
+					//check if next node is a leaf
+					//if yes convert it into branch
+					//insert this value in branchvalue[16]
+					//check the lenght of the leaf it 1 then create leaf store empty value
+					//lenght of leaf is 0 .... i think it is the same
+					//lenght of leaf is > 1 ....store in leaf
 					currNode.flag_value.value = mpt.InsertRecursive(mpt.db[currNode.flag_value.value], nil, newValue, nil)
 				} else if check_if_common_path_exists(leftPath, decodedHexArray) {
 					counter := 0
@@ -404,12 +417,13 @@ func (mpt *MerklePatriciaTrie) InsertRecursive(node Node, leftPath []uint8, newV
 					//make extension node a branch and one leaf
 					nodeBranch := Node{}
 					nodeBranch.node_type = 1
-
 					leftPath = append(leftPath, 16)
-					//creating a leaf
 					nodeLeaf := Node{}
 					nodeLeaf.node_type = 2
 					nodeLeaf.flag_value.encoded_prefix = compact_encode(leftPath[1:])
+
+					//creating a leaf
+
 					nodeLeaf.flag_value.value = newValue
 					nodeBranch.branch_value[leftPath[0]] = mpt.InsertRecursive(nodeLeaf, nil, "", nil)
 
@@ -424,6 +438,7 @@ func (mpt *MerklePatriciaTrie) InsertRecursive(node Node, leftPath []uint8, newV
 					}
 					hashBranch := nodeBranch.hash_node()
 					mpt.db[hashBranch] = nodeBranch
+					fmt.Println("Returning hash")
 					return hashBranch
 				}
 			}
@@ -441,12 +456,15 @@ func (mpt *MerklePatriciaTrie) InsertRecursive(node Node, leftPath []uint8, newV
 				fmt.Println("Branch and path already exists")
 				index := leftPath[0]
 				nextNode := mpt.db[currNode.branch_value[leftPath[0]]]
+				fmt.Println("Next node type :", nextNode.node_type)
 				leftPath = leftPath[1:]
 
 				currNode.branch_value[index] = mpt.InsertRecursive(nextNode, leftPath, newValue, nil)
+				fmt.Println("Value updated in branch")
 			}
 			hashBr := currNode.hash_node()
 			mpt.db[hashBr] = currNode
+			fmt.Println("Branch updated")
 			return hashBr
 		}
 	}
@@ -496,7 +514,7 @@ func createBranchNode(path []uint8, new_value string) (string, Node) {
 
 //Delete func
 func (mpt *MerklePatriciaTrie) Delete(key string) string {
-
+	fmt.Println("VALUE to be Deleted :", key)
 	pathLeft := StringToHexArray(key)
 	fmt.Println("in Del - input Hex:", pathLeft)
 	currentNode := mpt.db[mpt.root]
@@ -512,7 +530,7 @@ func (mpt *MerklePatriciaTrie) Delete(key string) string {
 }
 
 func (mpt *MerklePatriciaTrie) delHelper(nodeKey string, currentNode Node, pathLeft []uint8, hashStack []string) (string, error) {
-	fmt.Println("--------------------------------------------------------------------------------------")
+	fmt.Println("---------------------------------delHelper--------------------------------------------------")
 	if len(pathLeft) > 0 && currentNode.node_type != 0 { //path length >0
 		fmt.Println("in Del - path length > 0")
 		if currentNode.node_type == 1 { // branch and pathleft >0
@@ -521,10 +539,11 @@ func (mpt *MerklePatriciaTrie) delHelper(nodeKey string, currentNode Node, pathL
 				fmt.Println("Value exists in branch!!")
 				fmt.Println("Hash found:", currentNode.branch_value[pathLeft[0]])
 				hash := currentNode.branch_value[pathLeft[0]]
-				// pathLeft = pathLeft[1:]
+				//pathLeft = pathLeft[1:]
 				fmt.Println("PathLeft from branch :", pathLeft)
 				// if path ends in branch and so value can be  stored in empty leaf node
-				if len(pathLeft) == 0 { // pathleft gets over at branch node
+				if len(pathLeft) == 0 { // pathleft gets over at branch node //starbucks
+					//if len(pathLeft) == 1 { // pathleft gets over at branch node
 					fmt.Println("pathleft gets over at branch node")
 					if mpt.db[hash].node_type == 1 { // if this branch node contains a value of node
 						fmt.Println("next node :-  branch node")
@@ -534,6 +553,7 @@ func (mpt *MerklePatriciaTrie) delHelper(nodeKey string, currentNode Node, pathL
 							branchnode := mpt.db[hash]
 							value := branchnode.branch_value[16]
 							branchnode.branch_value[16] = ""
+							mpt.db[hash] = branchnode
 							fmt.Println("Deleting from db")
 							delete(mpt.db, hash) // delete :-> empty - value node
 							///  l!!!!!!!!! rearrange trie !!!!!
@@ -574,6 +594,32 @@ func (mpt *MerklePatriciaTrie) delHelper(nodeKey string, currentNode Node, pathL
 						fmt.Println("Returning with Error : ")
 						return "", errors.New("path_not_found")
 					}
+				} else if len(pathLeft) < -3 { //starbucks{
+					fmt.Println("NEW code")
+					fmt.Println("Current Node :", currentNode.String())
+
+					//nexthnode := mpt.db[hash]
+					value := mpt.db[currentNode.branch_value[pathLeft[0]]].flag_value.value
+
+					fmt.Println("VAlue :", value)
+					fmt.Println("Node Type :", currentNode.node_type)
+
+					fmt.Println("deleting node : ", (mpt.db[currentNode.branch_value[pathLeft[0]]]))
+					delete(mpt.db, currentNode.branch_value[pathLeft[0]]) //
+					thisNode := &currentNode
+					//currentNode.branch_value[pathLeft[0]] = "" //coffee
+					(*thisNode).branch_value[pathLeft[0]] = ""
+					//nextnode.branch_value[pathLeft[0]] = ""
+					///////
+
+					fmt.Println("Current Node after modification:", thisNode.String())
+					fmt.Println("Returning with value : ", value)
+					hashStack = append(hashStack, hash)
+					fmt.Println("rearranging trie : ")
+					mpt.rearrangeDeletedTrie(hashStack)
+
+					return value, nil
+					//starbucks
 				} else { //pathLeft > 0
 					fmt.Println("pathleft traversing through branch node")
 					fmt.Println("currentNode.branch_value before making empty", currentNode.branch_value[pathLeft[0]])
@@ -582,6 +628,7 @@ func (mpt *MerklePatriciaTrie) delHelper(nodeKey string, currentNode Node, pathL
 					fmt.Println("\nHash before removing value from the branch[16] field:", currentNode.hash_node())
 					fmt.Println("\nHASHSTACK before : ", hashStack)
 					hashStack = append(hashStack, hash)
+
 					fmt.Println("HASHSTACK after: ", hashStack)
 					pathLeft = pathLeft[1:]
 					fmt.Println("Pathleft : ", pathLeft)
@@ -620,6 +667,7 @@ func (mpt *MerklePatriciaTrie) delHelper(nodeKey string, currentNode Node, pathL
 							fmt.Println("so finding next node")
 							nextnode := mpt.db[hash]
 							fmt.Println("next node : ", nextnode)
+							value := nextnode.branch_value[16]
 							nextnode.branch_value[16] = ""
 							mpt.db[hash] = nextnode
 							fmt.Println("Value after deleted:", mpt.db[hash].branch_value[16])
@@ -629,13 +677,14 @@ func (mpt *MerklePatriciaTrie) delHelper(nodeKey string, currentNode Node, pathL
 							fmt.Println("HASHSTACK before : ", hashStack)
 							hashStack = append(hashStack, hash)
 							fmt.Println("HASHSTACK after  : ", hashStack)
+
 							//rearrange trie ///// !!!!!!!! call func
 							fmt.Println("calling rearrangeDeletedTrie")
 
 							mpt.rearrangeDeletedTrie(hashStack)
 							// !!!!!!!!!!!!!!!!!!!!!!!!!!
 							fmt.Println("returning : ", currentNode.flag_value.value)
-							return currentNode.flag_value.value, nil
+							return value, nil
 						} //................................value not found
 						fmt.Println("returning with error")
 						return "", errors.New("path_not_found")
@@ -662,9 +711,7 @@ func (mpt *MerklePatriciaTrie) delHelper(nodeKey string, currentNode Node, pathL
 				nodePath := compact_decode(currentNode.flag_value.encoded_prefix)
 				fmt.Println("leftPath :", pathLeft)
 				fmt.Println("nodePath :", nodePath)
-
 				if reflect.DeepEqual(nodePath, pathLeft) {
-					fmt.Println("deep equal success")
 					//delete node
 					fmt.Println("deleting node from map")
 					delete(mpt.db, nodeKey)
@@ -683,9 +730,15 @@ func (mpt *MerklePatriciaTrie) delHelper(nodeKey string, currentNode Node, pathL
 
 			}
 		}
-	} // else if len(pathLeft) == 0 && currentNode.node_type != 0 { //pathlength ==0
+	} //else if len(pathLeft) == 0 && currentNode.node_type != 0 { //pathlength ==0
 	// 	if currentNode.node_type == 1 { // branch
-	// 		//go to the
+	// 		fmt.Println("Lenght is zero")
+	// 		previous_hash := currentNode.hash_node()
+	// 		currentNode.branch_value[16] = ""
+	// 		mpt.db[previous_hash] = currentNode
+	// 		hashStack = append(hashStack, previous_hash) //adding current ext
+
+	// 		mpt.rearrangeDeletedTrie(hashStack)
 	// 	} else if currentNode.node_type == 2 { //ext or leaf
 	// 		//extension
 	// 		if currentNode.flag_value.encoded_prefix[0] == 0 || currentNode.flag_value.encoded_prefix[0] == 1 {
@@ -695,7 +748,6 @@ func (mpt *MerklePatriciaTrie) delHelper(nodeKey string, currentNode Node, pathL
 
 	// 		}
 	// 	}
-
 	// } else if currentNode.node_type == 0 || len(pathLeft) < 0 { //path length <0 or nodetype =0
 	// 	return "", errors.New("path_not_found")
 	// }
@@ -706,6 +758,10 @@ func (mpt *MerklePatriciaTrie) delHelper(nodeKey string, currentNode Node, pathL
 // rearrangeDeletedTrie rearranges mpt
 func (mpt *MerklePatriciaTrie) rearrangeDeletedTrie(hashStack []string) {
 
+	fmt.Println("HASHSTACK")
+	for i := range hashStack {
+		fmt.Println(hashStack[i])
+	}
 	hashStack = hashStack[:len(hashStack)-1]
 	fmt.Println("HASHSTACK")
 	for i := range hashStack {
@@ -858,7 +914,7 @@ func (mpt *MerklePatriciaTrie) rearrangeDeletedTrieHelper(hashStack []string, co
 						u := uint8(n)
 
 						if nodetype == 1 {
-							fmt.Println("Previous is a branch")
+							fmt.Println("Next is a branch")
 							//Creating Extension node
 							nodeE := Node{}
 							nodeE.node_type = 2
@@ -869,11 +925,11 @@ func (mpt *MerklePatriciaTrie) rearrangeDeletedTrieHelper(hashStack []string, co
 							mpt.db[hash] = nextnode      //pepsi
 							return mpt.rearrangeDeletedTrieHelper(hashStack, counter-1, hash)
 						} else if nodetype == 2 {
-							fmt.Println("Previous is a ext/leaf")
+							fmt.Println("Next is a ext/leaf")
 							hex_prefix_array := AsciiArrayToHexArray(nextnode.flag_value.encoded_prefix)
 							fmt.Println("node_type == 2 - hex prefix: ", hex_prefix_array)
 							if (hex_prefix_array[0] == 0) || (hex_prefix_array[0] == 1) { //extension
-								fmt.Println("Previous is a ext")
+								fmt.Println("Next is a ext")
 								hex_array := compact_decode(nextnode.flag_value.encoded_prefix)
 								hex_array = append([]uint8{u}, hex_array...)
 								nextnode.flag_value.encoded_prefix = compact_encode(hex_array)
@@ -882,15 +938,32 @@ func (mpt *MerklePatriciaTrie) rearrangeDeletedTrieHelper(hashStack []string, co
 								mpt.db[hash] = nextnode            //pepsi
 								return mpt.rearrangeDeletedTrieHelper(hashStack, counter-1, hash)
 							} else if (hex_prefix_array[0] == 2) || (hex_prefix_array[0] == 3) { //leaf
-								fmt.Println("Previous is a leaf")
-								hex_array := compact_decode(nextnode.flag_value.encoded_prefix)
-								hex_array = append([]uint8{u}, hex_array...)
+								fmt.Println("Next is a leaf")
+								//check if the previous is extension
+								// if so club it with the leaf
+								//now me me me me
+								var hex_array []uint8
+								nodeUnknown := mpt.db[hashStack[counter-1]]
+								if nodeUnknown.node_type == 2 {
+									hex_with_prefix_array := AsciiArrayToHexArray(nodeUnknown.flag_value.encoded_prefix)
+									if hex_with_prefix_array[0] == 0 || hex_with_prefix_array[0] == 1 {
+										fmt.Println("Extension node..")
+										hex_array = compact_decode(nodeUnknown.flag_value.encoded_prefix)
+									}
+								}
+								hex_array = append(hex_array, []uint8{u}...)
+
+								to_be_added_array := compact_decode(nextnode.flag_value.encoded_prefix)
+								hex_array = append(hex_array, to_be_added_array...)
+								// hex_array = append([]uint8{u}, hex_array...)
 								hex_array = append(hex_array, 16)
+								fmt.Println("The final hex array1234567 : ", hex_array)
 								nextnode.flag_value.encoded_prefix = compact_encode(hex_array)
-								delete(mpt.db, hashStack[counter]) //pepsi maybe
-								hash := nextnode.hash_node()       //pepsi
-								mpt.db[hash] = nextnode            //pepsi
-								return mpt.rearrangeDeletedTrieHelper(hashStack, counter-1, hash)
+								delete(mpt.db, hashStack[counter])   //pepsi maybe
+								delete(mpt.db, hashStack[counter-1]) //pepsi
+								hash := nextnode.hash_node()         //pepsi
+								mpt.db[hash] = nextnode              //pepsi
+								return mpt.rearrangeDeletedTrieHelper(hashStack, counter-2, hash)
 							}
 						}
 					}
@@ -1109,13 +1182,24 @@ func AsciiArrayToHexArray(encoded_arr []uint8) []uint8 {
 
 func main() { //before pepsi
 	mpt := &MerklePatriciaTrie{make(map[string]Node), ""}
-	mpt.CreateTestMpt()
+	//mpt.CreateTestMpt()
+
 	//fmt.Printf("%+v\n", mpt)
 	// fmt.Printf("mpt-blank: %+v\n", mpt)
 	// ////insert do -> verb
 	// mpt.Insert("do", "verb")
 	// fmt.Printf("mpt-do: %+v\n", mpt)
 	////////////
+
+	fmt.Println("inserting do")
+	mpt.Insert("do", "verb")
+	fmt.Println("inserting dog")
+	mpt.Insert("dog", "puppy")
+	fmt.Println("inserting doge")
+	mpt.Insert("doge", "coin")
+	fmt.Println("inserting horse")
+	mpt.Insert("horse", "stallion")
+
 	fmt.Println("####################################")
 	fmt.Println("====================================")
 	v, e := mpt.Get("dog")
@@ -1142,64 +1226,107 @@ func main() { //before pepsi
 	}
 
 	fmt.Println("====================================")
-	v2, e2 := mpt.Get("do")
-	if e2 != nil {
-		fmt.Println("error in GET method")
-	} else {
-		fmt.Println("do : ", v2)
-	}
-	v1, e1 = mpt.Get("dog")
+	fmt.Println("====================================")
+
+	v1, e1 = mpt.Get("doge")
 	if e1 != nil {
 		fmt.Println("error in GET method")
 	} else {
-		fmt.Println("dog : ", v1)
+		fmt.Println("value3 : ", v1)
 	}
+
+	// fmt.Println("====================================")
+	// fmt.Println("====================================")
+
+	fmt.Println("inserting dog again.............................")
+	mpt.Insert("dog", "puppy")
+
+	fmt.Println("====================================")
+	fmt.Println("====================================")
+	fmt.Println("====================================")
+
+	v1, e1 = mpt.Get("do")
+	if e1 != nil {
+		fmt.Println("error in GET method")
+	} else {
+		fmt.Println("do : ", v1)
+	}
+
+	// fmt.Println("====================================")
+	// fmt.Println("====================================")
+	// fmt.Println("====================================")
+	// fmt.Println("====================================")
+	v2, e2 := mpt.Get("dog")
+	if e2 != nil {
+		fmt.Println("error in GET method")
+	} else {
+		fmt.Println("dog : ", v2)
+	}
+	// fmt.Println("====================================")
+	// fmt.Println("====================================")
+	// fmt.Println("====================================")
 	v1, e1 = mpt.Get("doge")
 	if e1 != nil {
 		fmt.Println("error in GET method")
 	} else {
 		fmt.Println("doge : ", v1)
 	}
-	v1, e1 = mpt.Get("horse")
-	if e1 != nil {
-		fmt.Println("error in GET method")
-	} else {
-		fmt.Println("horse : ", v1)
-	}
-	fmt.Println("====================================")
 
-	fmt.Println("inserting horse")
-	mpt.Insert("horse", "stallion")
 	v1, e1 = mpt.Get("horse")
+
 	if e1 != nil {
 		fmt.Println("error in GET method")
 	} else {
 		fmt.Println("horse : ", v1)
 	}
 
-	fmt.Println("inserting dorg")
-	mpt.Insert("dorg", "purppy")
-
-	vd, ed := mpt.Get("dorg")
-	if ed != nil {
-		fmt.Println("error in GET method")
-	} else {
-		fmt.Println("dorg : ", vd)
-	}
-
-	fmt.Println("inserting dog")
-	mpt.Insert("dog", "puppy")
-
-	vd, ed = mpt.Get("dog")
-	if ed != nil {
-		fmt.Println("error in GET method")
-	} else {
-		fmt.Println("dog : ", vd)
-	}
-
-	fmt.Println("EOP")
 	fmt.Println("====================================")
-	fmt.Println("####################################")
+	fmt.Println("====================================")
+	fmt.Println("====================================")
+	// fmt.Println(mpt.String())
+	// v1, e1 = mpt.Get("horse")
+	// if e1 != nil {
+	// 	fmt.Println("error in GET method")
+	// } else {
+	// 	fmt.Println("horse : ", v1)
+	// }
+	// fmt.Println("====================================")
+	// fmt.Println("====================================")
+	// fmt.Println("====================================")
+	// fmt.Println("====================================")
+
+	// fmt.Println("inserting horse")
+	// mpt.Insert("horse", "stallion")
+	// v1, e1 = mpt.Get("horse")
+	// if e1 != nil {
+	// 	fmt.Println("error in GET method")
+	// } else {
+	// 	fmt.Println("horse : ", v1)
+	// }
+
+	// fmt.Println("inserting dorg")
+	// mpt.Insert("dorg", "purppy")
+
+	// vd, ed := mpt.Get("dorg")
+	// if ed != nil {
+	// 	fmt.Println("error in GET method")
+	// } else {
+	// 	fmt.Println("dorg : ", vd)
+	// }
+
+	// // fmt.Println("inserting dog")
+	// // mpt.Insert("dog", "puppy")
+
+	// vd, ed = mpt.Get("dog")
+	// if ed != nil {
+	// 	fmt.Println("error in GET method")
+	// } else {
+	// 	fmt.Println("dog : ", vd)
+	// }
+
+	// fmt.Println("EOP")
+	// fmt.Println("====================================")
+	// fmt.Println("####################################")
 
 }
 
