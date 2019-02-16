@@ -170,7 +170,7 @@ func node_to_string(node Node) string {
 }
 
 func (mpt *MerklePatriciaTrie) Initial() {
-	// mpt.db = map[string]Node{}
+
 	mpt.db = make(map[string]Node)
 	mpt.root = ""
 }
