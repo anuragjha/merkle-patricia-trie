@@ -39,7 +39,7 @@ func TestExt(t *testing.T) {
 	v, _ = mpt.Get("aa")
 	check_eq("TestExt 013", v, "banana", t)
 
-	// !! not working - now working = working
+	// // //
 	mpt.Initial()
 	mpt.Insert("aaa", "apple")
 	mpt.Insert("aap", "banana")
@@ -54,7 +54,7 @@ func TestExt(t *testing.T) {
 	v, _ = mpt.Get("aaa")
 	check_eq("TestExt 030", v, "apple", t)
 
-	// !! not working = working
+	// // // !!
 	mpt.Initial()
 	mpt.Insert("p", "apple")
 	mpt.Insert("aaa", "banana")
@@ -69,7 +69,7 @@ func TestExt(t *testing.T) {
 	v, _ = mpt.Get("aaa")
 	check_eq("TestExt 031", v, "banana", t)
 
-	// !! not working = working
+	// // // !!
 	mpt.Initial()
 	mpt.Insert("p", "apple")
 	mpt.Insert("aaa", "banana")
@@ -84,7 +84,7 @@ func TestExt(t *testing.T) {
 	v, _ = mpt.Get("aaa")
 	check_eq("TestExt 033", v, "banana", t)
 
-	// !! not working = working
+	// // // !!
 	mpt.Initial()
 	mpt.Insert("aa", "apple")
 	mpt.Insert("ap", "banana")
@@ -98,7 +98,7 @@ func TestExt(t *testing.T) {
 	v, _ = mpt.Get("ap")
 	check_eq("TestExt 111", v, "banana", t)
 
-	// !! not working = working
+	// // // !!
 	mpt.Initial()
 	mpt.Insert("aa", "apple")
 	mpt.Insert("ap", "banana")
@@ -112,7 +112,7 @@ func TestExt(t *testing.T) {
 	v, _ = mpt.Get("ap")
 	check_eq("TestExt 113", v, "banana", t)
 
-	//not working !!!! imp
+	// // // !!
 	mpt.Initial()
 	mpt.Insert("p", "apple")
 	mpt.Insert("aaaa", "banana")
@@ -127,7 +127,7 @@ func TestExt(t *testing.T) {
 	v, _ = mpt.Get("aaaa")
 	check_eq("TestExt 140", v, "banana", t)
 
-	//not working !!! = working
+	// // // !!!
 	mpt.Initial()
 	mpt.Insert("aaa", "apple")
 	mpt.Insert("aap", "banana")
@@ -153,7 +153,7 @@ func TestExt(t *testing.T) {
 func TestLeaf(t *testing.T) {
 	mpt := new(p1.MerklePatriciaTrie)
 
-	//!! not working = working
+	//!!
 	mpt.Initial()
 	mpt.Insert("a", "apple")
 	mpt.Insert("b", "banana")
@@ -164,7 +164,7 @@ func TestLeaf(t *testing.T) {
 	mpt.Delete("a")
 	check_mpt("TestLeaf 000", mpt.Order_nodes(), "./mpt_tests/delete_basic_1.txt", t)
 
-	// !! not working = working
+	// // !!
 	mpt.Initial()
 	mpt.Insert("a", "apple")
 	mpt.Insert("b", "banana")
@@ -175,7 +175,7 @@ func TestLeaf(t *testing.T) {
 	mpt.Delete("ab")
 	check_mpt("TestLeaf 002", mpt.Order_nodes(), "./mpt_tests/basic_0.txt", t)
 
-	//!! not working = working
+	// //!!
 	mpt.Initial()
 	mpt.Insert("a", "apple")
 	mpt.Insert("p", "banana")
@@ -187,7 +187,7 @@ func TestLeaf(t *testing.T) {
 	mpt.Delete("b")
 	check_eq("TestLeaf 011", mpt.Order_nodes(), inserted_trie, t)
 
-	// !! not working = working
+	// // !!
 	mpt.Initial()
 	mpt.Insert("a", "apple")
 	mpt.Insert("p", "banana")
@@ -199,7 +199,7 @@ func TestLeaf(t *testing.T) {
 	mpt.Delete("bc")
 	check_eq("TestLeaf 013", mpt.Order_nodes(), inserted_trie, t)
 
-	// !! not working = working
+	// // !!
 	mpt.Initial()
 	mpt.Insert("bab", "apple")
 	mpt.Insert("aa", "banana")
@@ -211,7 +211,7 @@ func TestLeaf(t *testing.T) {
 	mpt.Delete("b")
 	check_eq("TestLeaf 040", mpt.Order_nodes(), inserted_trie, t)
 
-	// !! not working = working
+	// // !!
 	mpt.Initial()
 	mpt.Insert("aab", "apple")
 	mpt.Insert("app", "banana")
@@ -223,7 +223,7 @@ func TestLeaf(t *testing.T) {
 	mpt.Delete("ac")
 	check_eq("TestLeaf 031", mpt.Order_nodes(), inserted_trie, t)
 
-	// !! not working = working
+	// // !!
 	mpt.Initial()
 	mpt.Insert("aab", "apple")
 	mpt.Insert("app", "banana")
@@ -235,7 +235,7 @@ func TestLeaf(t *testing.T) {
 	mpt.Delete("ace")
 	check_eq("TestLeaf 033", mpt.Order_nodes(), inserted_trie, t)
 
-	// !! not working = working
+	// // !!
 	mpt.Initial()
 	mpt.Insert("p", "banana")
 	inserted_trie = mpt.Order_nodes()
@@ -258,6 +258,7 @@ func TestLeaf(t *testing.T) {
 	mpt.Delete("abc")
 	check_eq("TestLeaf 104", mpt.Order_nodes(), inserted_trie, t)
 
+	// // !!!
 	mpt.Initial()
 	mpt.Insert("a", "apple")
 	inserted_trie = mpt.Order_nodes()
@@ -268,6 +269,7 @@ func TestLeaf(t *testing.T) {
 	mpt.Delete("b")
 	check_eq("TestLeaf 111", mpt.Order_nodes(), inserted_trie, t)
 
+	// // !!!
 	mpt.Initial()
 	mpt.Insert("a", "apple")
 	inserted_trie = mpt.Order_nodes()
@@ -324,7 +326,7 @@ func TestDeleteBasic(t *testing.T) {
 func TestBranch(t *testing.T) {
 	mpt := new(p1.MerklePatriciaTrie)
 
-	//not working - imp = working
+	// //
 	mpt.Initial()
 	mpt.Insert("aa", "apple")
 	mpt.Insert("ap", "banana")
@@ -336,7 +338,7 @@ func TestBranch(t *testing.T) {
 	mpt.Delete("a")
 	check_eq("TestBranch nv_np", mpt.Order_nodes(), inserted_trie, t)
 
-	// not working - imp = working
+	// //
 	mpt.Initial()
 	mpt.Insert("a", "old")
 	mpt.Insert("aa", "apple")
@@ -352,7 +354,7 @@ func TestBranch(t *testing.T) {
 	expected_mpt.Insert("ap", "banana")
 	check_eq("TestBranch v_np", mpt.Order_nodes(), expected_mpt.Order_nodes(), t)
 
-	// not working = working
+	// //
 	mpt.Initial()
 	mpt.Insert("a", "apple")
 	mpt.Insert("b", "banana")
@@ -364,7 +366,7 @@ func TestBranch(t *testing.T) {
 	mpt.Delete("c")
 	check_eq("TestBranch nv_p", mpt.Order_nodes(), inserted_trie, t)
 
-	// not working - imp = working
+	// //
 	mpt.Initial()
 	mpt.Insert("aa", "apple")
 	mpt.Insert("ap", "banana")

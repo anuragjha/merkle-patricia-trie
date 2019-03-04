@@ -12,15 +12,22 @@ func main() {
 	mpt := p1.MerklePatriciaTrie{}
 
 	//mpt.Initial()
-	mpt.Insert("a", "10")
-	mpt.Insert("b", "20")
-	mpt.Insert("p", "30")
-	mpt.Insert("c", "40")
-	mpt.Insert("aa", "50")
+	// mpt.Insert("a", "apple")
+	// mpt.Insert("b", "banana")
+	// mpt.Insert("p", "papaya") //TODO -- uncomment and see if insert working without error
+	// mpt.Insert("c", "cream")
+	// mpt.Insert("aa", "aananas")
+	//mpt.Delete("aa")
 
-	mpt.Delete("aa")
+	mpt.Insert("a", "apple")
+	mpt.Insert("p", "banana")
+	//mpt.Insert("aaap", "orange")
+	//inserted_trie := mpt.Order_nodes()
+	mpt.Insert("a", "new")
+
 	fmt.Println("===============Trie===============")
 	inserted_trie := mpt.Order_nodes()
 	fmt.Println(inserted_trie)
+	//fmt.Println("===============Trie===============")
 
 }

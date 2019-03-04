@@ -19,21 +19,21 @@ func (mpt *MerklePatriciaTrie) delHelper(nodeKey string, currentNode Node, pathL
 				index := pathLeft[0]
 				pathLeft = pathLeft[1:]
 
-				next_node := mpt.db[hash]
+				nextNode := mpt.db[hash]
 
-				if next_node.node_type == 2 {
+				if nextNode.node_type == 2 {
 
-					currentNodeHexArray := AsciiArrayToHexArray(next_node.flag_value.encoded_prefix)
-					if (currentNodeHexArray[0] == 2) || (currentNodeHexArray[0] == 3) {
+					currentNodeHexArray := AsciiArrayToHexArray(nextNode.flag_value.encoded_prefix)
+					if (currentNodeHexArray[0] == 2) || (currentNodeHexArray[0] == 3) { //leaf
 
-						if len(pathLeft) == 0 && len(compact_decode(next_node.flag_value.encoded_prefix)) == 0 {
+						if len(pathLeft) == 0 && len(compact_decode(nextNode.flag_value.encoded_prefix)) == 0 {
 
 							currentNode.branch_value[index] = ""
 							mpt.db[oldhash] = currentNode
 
-						} else if len(pathLeft) > 0 && len(next_node.flag_value.encoded_prefix) > 0 {
+						} else if len(pathLeft) > 0 && len(nextNode.flag_value.encoded_prefix) > 0 {
 
-							if reflect.DeepEqual(pathLeft, compact_decode(next_node.flag_value.encoded_prefix)) {
+							if reflect.DeepEqual(pathLeft, compact_decode(nextNode.flag_value.encoded_prefix)) {
 
 								currentNode.branch_value[index] = ""
 								mpt.db[oldhash] = currentNode
@@ -112,24 +112,24 @@ func (mpt *MerklePatriciaTrie) delHelper(nodeKey string, currentNode Node, pathL
 		if currentNode.node_type == 1 { // branch
 			if currentNode.branch_value[16] != "" {
 
-				previous_hash := currentNode.hash_node()
-				previous_value := currentNode.branch_value[16]
+				previousHash := currentNode.hash_node()
+				previousValue := currentNode.branch_value[16]
 				currentNode.branch_value[16] = ""
-				mpt.db[previous_hash] = currentNode
-				hashStack = append(hashStack, previous_hash) //adding current ext
+				mpt.db[previousHash] = currentNode
+				hashStack = append(hashStack, previousHash) //adding current ext
 				mpt.rearrangeDeletedTrie(hashStack)
-				return previous_value, nil
+				return previousValue, nil
 			}
 
 		} else if currentNode.node_type == 2 { //ext or leaf
 			//extension
 
-			hex_empty := AsciiArrayToHexArray(currentNode.flag_value.encoded_prefix)
+			nodeHexPath := AsciiArrayToHexArray(currentNode.flag_value.encoded_prefix)
 
-			if hex_empty[0] == 2 || hex_empty[0] == 3 { //leaf
-				hex_empty := AsciiArrayToHexArray(currentNode.flag_value.encoded_prefix)
+			if nodeHexPath[0] == 2 || nodeHexPath[0] == 3 { //leaf
+				nodeHexPath := AsciiArrayToHexArray(currentNode.flag_value.encoded_prefix)
 
-				if reflect.DeepEqual(hex_empty, []uint8{2, 0}) {
+				if reflect.DeepEqual(nodeHexPath, []uint8{2, 0}) {
 
 					value := currentNode.flag_value.value
 					delete(mpt.db, currentNode.hash_node())

@@ -47,19 +47,22 @@ func (mpt *MerklePatriciaTrie) Insert(key string, new_value string) {
 
 	pathLeft := StringToHexArray(key)
 	if mpt.root == "" {
-		pathLeft = append(pathLeft, 16)
-		leafNode := Node{}
-		leafNode.node_type = 2
-		leafNode.flag_value.encoded_prefix = compact_encode(pathLeft)
+		// pathLeft = append(pathLeft, 16)
+		// leafNode := Node{}
+		// leafNode.node_type = 2
+		// leafNode.flag_value.encoded_prefix = compact_encode(pathLeft)
 
-		leafNode.flag_value.value = new_value
-		mpt.root = mpt.insertHelper(leafNode, nil, "", nil)
+		// leafNode.flag_value.value = new_value
+		// mpt.root = mpt.insertHelper(leafNode, nil, "", nil)
+		//>>
+		mpt.root = mpt.insertHelper1(Node{}, pathLeft, new_value)
 
 	} else {
-		rootNodeHash := mpt.root
 
-		mpt.root = mpt.insertHelper(mpt.db[rootNodeHash], pathLeft, new_value, []uint8{})
-
+		// rootNodeHash := mpt.root
+		// mpt.root = mpt.insertHelper(mpt.db[rootNodeHash], pathLeft, new_value, []uint8{})
+		//>>
+		mpt.root = mpt.insertHelper1(mpt.db[mpt.root], pathLeft, new_value)
 	}
 
 }
