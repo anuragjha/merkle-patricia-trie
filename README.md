@@ -37,52 +37,52 @@ https://golang.org/pkg/strings/#HasPrefix (Links to an external site.)
 
  
 
-Project 1 specification
-
+### Project 1 specification
+####
 For this project, implement a Merkle Patricia Trie according to this Link (Links to an external site.) and instructor's lectures. The examples in this specification are provided in both Rust and Go. Skeleton code and some help functions will be provided. You should not change the skeleton code. If you have different ideas that require to change the skeleton code, see the TA *before* submission. Any modification to the skeleton code without the TA's approval will result in point deduction.
-
+####
 You have to choose between Go and Rust. Skeleton code is provided for both language and please write and pass your own tests before submitting the final version of code.
 
-You need to implement five features of the Merkle Patricia Trie:
+#### You need to implement five features of the Merkle Patricia Trie:
 
-1. Get(key) -> value
+#### 1. Get(key) -> value
 Description: The Get function takes a key as argument, traverses down the Merkle Patricia Trie to find the value, and returns it. If the key doesn't exist, it will return an empty string.(for the Go version: if the key is nil, Get returns an empty string.)
-Arguments: key (string)
-Return: the value stored for that key (string).
-Rust function definition: fn get(&mut self, key: &str) -> String
-Go function definition: func (mpt *MerklePatriciaTrie) Get(key string) string
+##### Arguments: key (string)
+##### Return: the value stored for that key (string).
+##### Rust function definition: fn get(&mut self, key: &str) -> String
+##### Go function definition: func (mpt *MerklePatriciaTrie) Get(key string) string
 
-2. Insert(key, value)
+#### 2. Insert(key, value)
 Description: The Insert function takes a key and value as arguments. It will traverse  Merkle Patricia Trie, find the right place to insert the value, and do the insertion.(for the Go version: you can assume the key and value will never be nil.)
-Arguments: key (string), value (string)
-Return: string
-Rust function definition: fn insert(&mut self, key: &str, new_value: &str)
-Go function definition: func (mpt *MerklePatriciaTrie) Insert(key string, new_value string)
+##### Arguments: key (string), value (string)
+##### Return: string
+##### Rust function definition: fn insert(&mut self, key: &str, new_value: &str)
+##### Go function definition: func (mpt *MerklePatriciaTrie) Insert(key string, new_value string)
 
-3. Delete(key)
+#### 3. Delete(key)
 Description: The Delete function takes a key as argument, traverses the Merkle Patricia Trie and finds that key. If the key exists, delete the corresponding value and re-balance the trie if necessary, then return an empty string; if the key doesn't exist, return "path_not_found".
-Arguments: key (string)
-Return: string
-Rust function definition: fn delete(&mut self, key: &str) -> String
-Go function definition: func (mpt *MerklePatriciaTrie) Delete(key string) string
+##### Arguments: key (string)
+##### Return: string
+##### Rust function definition: fn delete(&mut self, key: &str) -> String
+##### Go function definition: func (mpt *MerklePatriciaTrie) Delete(key string) string
 
-4. compact_encode()
+#### 4. compact_encode()
 The compact_encode function takes an array of numbers as input (each number is between 0 and 15 included, representing a single hex digit), and returns an array of numbers according to the compact encoding rules in the github wiki page under "Compact encoding of hex sequence with optional terminator"). Each number in the output is between 0 and 255 included (representing an ASCII-encoded letter, or for the first value it represents the node type as per the wiki page). You may find a Python version in this Link (Links to an external site.), but be mindful that the return type is different!
-Arguments: hex_array(array of u8)
-Return: array of u8
-Rust function definition: compact_encode(hex_array: Vec<u8>) -> Vec<u8>
-Example: input=[1, 6, 1], encoded_array=[1, 1, 6, 1], output=[17, 97]
+##### Arguments: hex_array(array of u8)
+##### Return: array of u8
+##### Rust function definition: compact_encode(hex_array: Vec<u8>) -> Vec<u8>
+##### Example: input=[1, 6, 1], encoded_array=[1, 1, 6, 1], output=[17, 97]
 
-5. compact_decode()
+#### 5. compact_decode()
 Description: This function reverses the compact_encode() function. 
-Arguments: hex_array(array of u8)
-Return: array of u8
-Rust function definition: compact_decode(encoded_arr: Vec<u8>) -> Vec<u8>
-Example: input=[17, 97], output=[1, 6, 1]
+##### Arguments: hex_array(array of u8)
+##### Return: array of u8
+##### Rust function definition: compact_decode(encoded_arr: Vec<u8>) -> Vec<u8>
+##### Example: input=[17, 97], output=[1, 6, 1]
 
-Other help functions:
+#### Other help functions:
 
-1. fn hash_node(node: &Node) -> String
+##### 1. fn hash_node(node: &Node) -> String
 Description: This function takes a node as the input, hash the node and return the hashed string.
 
 If you use Golang, please follow this link to install the SHA3-256 package: https://github.com/golang/crypto (Links to an external site.)
