@@ -1,8 +1,8 @@
 # CS686-F19
 CS686 blockchain class
 
-Project 1: Build a Merkle Patricia Tree
-Due Feb 15 by 11:59pm  Points 20
+## Project 1: Build a Merkle Patricia Tree
+##### Due Feb 15 by 11:59pm  Points 20
 Ethereum uses a Merkle Patricia Tree (Links to an external site.) to store the transaction data in a block. By organizing the transaction data in a Merkle Patricia Tree, any block with fraudulent transactions would not match the tree's root hash. Build your own implementation of a Merkle Patricia Trie, following the specifications at the Ethereum wiki (Links to an external site.). Be mindful that you will use this code in the subsequent projects. 
 
  
@@ -109,56 +109,10 @@ Other requirements:
 
 Hints:
 
-1. Think through all the cases of Get(), Insert(), and Delete() before implementing would save a lot of time. 
-2. If you use Rust, implement Clone() for both "Node" and "MerklePatriciaTrie" would be helpful.
-3. During the insertion or deletion, if you change the value of an existing node, it's hash_value must be changed. And since the parent node has to update the hash_value so that it could link to that node, the parent's hash_value should be updated as well, all the way up until the root.
-4. The grading process includes a lot of test cases, so prepare your own test cases and pass them would help you improve the code. 
-
-5. Given a string, you need to convert it to hex array, and then put that hex array into compact_encode() function to get the encoded hex array.
-
+##### 1. Think through all the cases of Get(), Insert(), and Delete() before implementing would save a lot of time. 
+##### 2. If you use Rust, implement Clone() for both "Node" and "MerklePatriciaTrie" would be helpful.
+##### 3. During the insertion or deletion, if you change the value of an existing node, it's hash_value must be changed. And since the parent node has to update the hash_value so that it could link to that node, the parent's hash_value should be updated as well, all the way up until the root.
+##### 4. The grading process includes a lot of test cases, so prepare your own test cases and pass them would help you improve the code. 
+##### 5. Given a string, you need to convert it to hex array, and then put that hex array into compact_encode() function to get the encoded hex array.
 Here's the logic of converting string to hex array: for each character, calculate the hex format of its ASCII value. For example, given character "a", its ASCII value is 97. The hex format of 97 is 61, then you can put hex array [6, 1] into compact_encode() function. The logic follows the github wixi page, as that page convert "do" to "64 6f", and then put it into compact_encode(). 
-
- 
-
-6. Normally if we are to implement a tree, we would use "pointers". For example, n1 = Node(), n2 = Node(); then n1.next = n2. But in MerklePatriciaTrie, we use a "HashMap" instead of the "pointer". And we get a node by its hash_value. 
-
-RUBRIC
-Project 1 Rubric
-Project 1 Rubric
-Criteria	Ratings	Pts
-This criterion is linked to a Learning Outcome Get
-4.0 pts
-Full Marks
-Return the correct value +3 Return error/path not found +1
-0.0 pts
-No Marks
-4.0 pts
-This criterion is linked to a Learning Outcome Insert
-6.0 pts
-Full Marks
-inserting a Leaf node at the right place +2 update the HashMap of the whole path +1 inserting a Branch node accordingly +2 inserting an Extension node accordingly +1
-0.0 pts
-No Marks
-6.0 pts
-This criterion is linked to a Learning Outcome Delete
-6.0 pts
-Full Marks
-finding a Leaf node and deleting it +2 update the HashMap of the whole path +1 updating a Branch node accordingly +2 (If Branch had two leaves and one of them was deleted, then the Branch node is deleted as well and the remaining leaf node takes over the key.) updating an Extension node accordingly +1 (If it were Extension->Branch->2 leaves and one leaf is deleted, then the whole path is updated to 1 leaf.)
-0.0 pts
-No Marks
-6.0 pts
-This criterion is linked to a Learning Outcome Compact encode
-2.0 pts
-Full Marks
-adding the correct prefix +1 get the ASCII value +1
-0.0 pts
-No Marks
-2.0 pts
-This criterion is linked to a Learning Outcome Compact decode
-2.0 pts
-Full Marks
-get the correct ASCII value back +1 remove the prefix +1
-0.0 pts
-No Marks
-2.0 pts
-Total Points: 20.0
+##### 6. Normally if we are to implement a tree, we would use "pointers". For example, n1 = Node(), n2 = Node(); then n1.next = n2. But in MerklePatriciaTrie, we use a "HashMap" instead of the "pointer". And we get a node by its hash_value. 
