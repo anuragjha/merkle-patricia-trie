@@ -1,10 +1,10 @@
 # Merkle Patricia Trie
 
-Ethereum uses a Merkle Patricia Tree (Links to an external site.) to store the transaction data in a block. By organizing the transaction data in a Merkle Patricia Tree, any block with fraudulent transactions would not match the tree's root hash. Build a implementation of a Merkle Patricia Trie, following the specifications at the Ethereum wiki (Links to an external site.).
+Ethereum uses a Merkle Patricia Tree to store the transaction data in a block. By organizing the transaction data in a Merkle Patricia Tree, any block with fraudulent transactions would not match the tree's root hash. Build a implementation of a Merkle Patricia Trie, following the specifications at the Ethereum wiki.
 
 ### Project specification
 ####
-For this project, implemented a Merkle Patricia Trie according to this Link (Links to an external site.).
+For this project, implemented a Merkle Patricia Trie according to this Link (https://github.com/ethereum/wiki/wiki/Patricia-Tree).
 
 #### five features of the Merkle Patricia Trie:
 
